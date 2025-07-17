@@ -13,8 +13,7 @@ const wechatRouter = require('./routes/wechat');
 var app = express();
 
 const FRONTEND_ORIGINS = [
-  'http://localhost:5173',
-  process.env.FRONTEND_ORIGIN || 'http://82.156.100.208:5173'
+    process.env.FRONTEND_ORIGIN
 ];
 
 app.use(cors({
@@ -22,7 +21,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'your_secret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }
