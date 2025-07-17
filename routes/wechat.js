@@ -2,10 +2,16 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-const corpId = process.env.WECHAT_CORP_ID || 'ww528f23f94b09b727';
-const agentId = process.env.WECHAT_AGENT_ID || '1000102';
-const agentSecret = process.env.WECHAT_AGENT_SECRET || 'g-2EBlHMp97R0d320oErw3EB9iP1c566TxXf5-zdKcY';
-const redirectUri = process.env.WECHAT_REDIRECT_URI || 'http://82.156.100.208:3000/api/wechat/callback';
+const corpId = process.env.WECHAT_CORP_ID;
+const agentId = process.env.WECHAT_AGENT_ID;
+const agentSecret = process.env.WECHAT_AGENT_SECRET;
+const frontendOrigin = process.env.FRONTEND_ORIGIN;
+const redirectUri = `${process.env.BACKEND_URL}/api/wechat/callback`;
+
+// 验证必要的环境变量
+if (!corpId || !agentId || !agentSecret) {
+  console.error('缺少必要的企业微信配置，请在.env文件中设置：WECHAT_CORP_ID, WECHAT_AGENT_ID, WECHAT_AGENT_SECRET');
+}
 
 // 1. 前端获取二维码参数
 router.get('/login_url', (req, res) => {
@@ -31,7 +37,7 @@ router.get('/callback', async (req, res) => {
     req.session.user = { userId };
 
     // 跳转回前端页面，带上登录状态
-    res.redirect(`http://82.156.100.208:5173/?userId=${userId}`);
+    res.redirect(`${frontendOrigin}/?userId=${userId}`);
   } catch (e) {
     res.status(500).send('WeChat login error');
   }

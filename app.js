@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -11,12 +12,17 @@ const wechatRouter = require('./routes/wechat');
 
 var app = express();
 
+const FRONTEND_ORIGINS = [
+  'http://localhost:5173',
+  process.env.FRONTEND_ORIGIN || 'http://82.156.100.208:5173'
+];
+
 app.use(cors({
-  origin: 'http://82.156.100.208:5173',
+  origin: FRONTEND_ORIGINS,
   credentials: true
 }));
 app.use(session({
-  secret: 'your_secret',
+  secret: process.env.SESSION_SECRET || 'your_secret',
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }
