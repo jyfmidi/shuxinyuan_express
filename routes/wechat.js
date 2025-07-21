@@ -133,7 +133,37 @@ router.get('/callback', async (req, res) => {
   }
 });
 
-// 3. 获取当前登录用户信息
+// 3. 测试登录
+router.post('/test_login', (req, res) => {
+  const { userId } = req.body;
+  
+  if (!userId || !userId.trim()) {
+    return res.status(400).json({ error: '用户ID不能为空' });
+  }
+  
+  try {
+    // 存储测试用户信息到 session
+    req.session.user = {
+      userId: userId.trim(),
+      name: userId.trim(),
+      isTestUser: true
+    };
+    
+    console.log('测试用户登录成功:', userId);
+    
+    res.json({
+      success: true,
+      user: req.session.user,
+      message: '测试登录成功'
+    });
+    
+  } catch (error) {
+    console.error('测试登录失败:', error);
+    res.status(500).json({ error: '测试登录失败' });
+  }
+});
+
+// 4. 获取当前登录用户信息
 router.get('/me', (req, res) => {
   if (req.session.user) {
     res.json({
@@ -148,7 +178,7 @@ router.get('/me', (req, res) => {
   }
 });
 
-// 4. 退出登录
+// 5. 退出登录
 router.post('/logout', (req, res) => {
   req.session.destroy((err) => {
     if (err) {
